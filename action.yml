@@ -1,0 +1,26 @@
+name: 'Pull Laravel I18n Files'
+description: 'Pulls keysets from Localang and updates local files.'
+inputs:
+  api-key:
+    description: 'API Key to update translations on localang.xyz'
+    required: true
+  project-id:
+    description: 'ID of project on localang.xyz'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.2
+    - name: Create Local Script
+      run: curl https://localang.xyz/laravel-i18n-pull-script -o localang-i18n-laravel-pull-action.php
+      shell: bash
+    - name: Run Pull Script
+      run: php -f localang-i18n-laravel-pull-action.php ${{ inputs.api-key }} ${{ inputs.project-id }}
+      shell: bash
+    - name: Delete Local Script
+      run: rm localang-i18n-laravel-pull-action.php
+      shell: bash
